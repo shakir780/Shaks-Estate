@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Account from "./Account";
+import AccountCard from "./AccountCard";
 
 const Header = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
@@ -83,7 +84,7 @@ const Header = () => {
             </div>
             <div
               onClick={() => setOpenSidebar(!openSidebar)}
-              className=" flex md:hidden px-2 py-2 border-2  cursor-pointer hover:opacity-70"
+              className=" flex md:hidden items-center   cursor-pointer hover:opacity-70"
             >
               <IoMenu className="text-3xl  text-white  " />
             </div>
@@ -91,20 +92,10 @@ const Header = () => {
         </div>
       </div>
       {openAccount && (
-        <div className="bg-white shadow-2xl h-full float-right mr-10 border-2 rounded-lg p-6">
-          <div className="flex flex-col gap-3 w-full">
-            <span className="block">
-              <span className="hover:bg-blue-200 block cursor-pointer w-full p-3 rounded-lg">
-                Log in
-              </span>
-            </span>
-            <span className="block">
-              <span className="hover:bg-blue-200 block cursor-pointer w-full p-3 rounded-lg">
-                Sign Up
-              </span>
-            </span>
-          </div>
-        </div>
+        <AccountCard
+          openAccount={openAccount}
+          setOpenAccount={setOpenAccount}
+        />
       )}
 
       {openSidebar && (
