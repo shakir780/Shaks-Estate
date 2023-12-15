@@ -1,13 +1,14 @@
 import { SlLocationPin } from "react-icons/sl";
 import { TiMessages } from "react-icons/ti";
-import { IoCallOutline, IoMenu, IoMenuSharp } from "react-icons/io5";
+import { IoCallOutline, IoMenu } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa";
-import { VscAccount } from "react-icons/vsc";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
+import Account from "./Account";
 
 const Header = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
+  const [openAccount, setOpenAccount] = useState(false);
   return (
     <>
       <header className="p-10 bg-white shadow-lg hidden md:block">
@@ -55,7 +56,7 @@ const Header = () => {
           </div>
         </div>
       </header>
-      <div className="bg-blue-400  md:p-1 py-4    ">
+      <div className="bg-blue-400 shadow-lg md:p-1 py-4    ">
         <div className="flex items-center justify-between md:block">
           <div className="flex justify-between items-center">
             <ul className="flex gap-3 text-white font-semibold text-xl uppercase px-3">
@@ -63,29 +64,22 @@ const Header = () => {
               <li className="cursor-pointer hover:opacity-60">About</li>
             </ul>
 
-            <div className="hidden md:flex gap-6 items-center ">
+            <div className="hidden md:flex gap-6 items-center px-16 ">
               <div className="bg-white px-4 py-4 h-full flex items-center gap-4 cursor-pointer">
                 <FaPlus className="text-blue-700" />
                 <h1>Submit Property</h1>
               </div>
-              <div className="flex border rounded-full py-2 px-4 gap-2 items-center">
-                <div>
-                  <IoMenuSharp className="text-xl" />
-                </div>
-                <div className="bg-gray-500 rounded-full p-2">
-                  <VscAccount className="text-xl fill-white" />
-                </div>
+              <div onClick={() => setOpenAccount(!openAccount)}>
+                <Account />
               </div>
             </div>
           </div>
           <div className="flex px-4 gap-4 ">
-            <div className="flex md:hidden border border-gray-30000 rounded-full py-2 px-4 gap-2 items-center cursor-pointer hover:scale-95">
-              <div>
-                <IoMenuSharp className="text-xl " />
-              </div>
-              <div className="bg-gray-500 rounded-full p-2">
-                <VscAccount className="text-xl fill-white" />
-              </div>
+            <div
+              onClick={() => setOpenAccount(!openAccount)}
+              className="flex md:hidden"
+            >
+              <Account />
             </div>
             <div
               onClick={() => setOpenSidebar(!openSidebar)}
@@ -96,6 +90,23 @@ const Header = () => {
           </div>
         </div>
       </div>
+      {openAccount && (
+        <div className="bg-white shadow-2xl h-full float-right mr-10 border-2 rounded-lg p-6">
+          <div className="flex flex-col gap-3 w-full">
+            <span className="block">
+              <span className="hover:bg-blue-200 block cursor-pointer w-full p-3 rounded-lg">
+                Log in
+              </span>
+            </span>
+            <span className="block">
+              <span className="hover:bg-blue-200 block cursor-pointer w-full p-3 rounded-lg">
+                Sign Up
+              </span>
+            </span>
+          </div>
+        </div>
+      )}
+
       {openSidebar && (
         <Sidebar setOpenSidebar={setOpenSidebar} openSidebar={openSidebar} />
       )}

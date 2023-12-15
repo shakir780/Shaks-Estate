@@ -3,9 +3,13 @@ import { IoCallOutline } from "react-icons/io5";
 import { SlLocationPin } from "react-icons/sl";
 import { TiMessages } from "react-icons/ti";
 
-const Sidebar = ({ openSidebar, setOpenSidebar }) => {
+interface SidebarProps {
+  openSidebar: boolean;
+  setOpenSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const Sidebar: React.FC<SidebarProps> = ({ openSidebar, setOpenSidebar }) => {
   return (
-    <div className="w-80 h-screen bg-white shadow-2xl fixed top-0">
+    <div className="w-80 h-screen bg-white shadow-2xl fixed top-0 ">
       <div className="flex gap-3 items-center justify-between p-4">
         <h1 className="font-bold uppercase text-2xl p-6">Shaks Estate</h1>
         <IoMdClose
