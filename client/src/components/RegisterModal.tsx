@@ -15,7 +15,7 @@ import {
   signInSuccess,
 } from "../redux/user/userSlice";
 import toast from "react-hot-toast";
-
+import { DynamicAxios } from "../utils/DynamicAxios";
 const RegisterModal = () => {
   const navigate = useNavigate();
 
@@ -41,62 +41,51 @@ const RegisterModal = () => {
     });
   };
 
-  console.log(signUpClicked);
+  const signInUrl = "/api/auth/signIn";
+  const signUpUrl = "/api/auth/signup";
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (signUpClicked) {
-      try {
-        dispatch(signUpStart());
-
-        const res = await fetch("/api/auth/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
+      dispatch(signUpStart());
+      DynamicAxios(signUpUrl, "POST", formData)
+        .then((data) => {
+          if (data.success === false) {
+            dispatch(signUpFailure(data.error));
+            toast.error(data.message);
+          } else {
+            dispatch(signUpSuccess(data));
+            navigate("/");
+            dispatch(setOpenAccount(false));
+            toast.success("User created successfully");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          dispatch(signUpFailure(error.message));
+          toast.error(error.message);
         });
-
-        const data = await res.json();
-
-        if (data.error) {
-          dispatch(signUpFailure(data.error));
-        } else {
-          dispatch(signUpSuccess(data));
-          navigate("/");
-          dispatch(setOpenAccount(false));
-        }
-      } catch (error: any) {
-        dispatch(signUpFailure(error.message));
-      }
     } else {
-      try {
-        dispatch(signInStart());
-        const res = await fetch("/api/auth/signin", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
+      dispatch(signInStart());
+      DynamicAxios(signInUrl, "POST", formData)
+        .then((data) => {
+          if (data.success === false) {
+            dispatch(signInFailure(data.error));
+            toast.error(data.message);
+            console.log(data.message);
+          } else {
+            dispatch(signInSuccess(data));
+            navigate("/");
+            dispatch(setOpenAccount(false));
+            toast.success("User created successfully");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          dispatch(signInFailure(error.message));
+          toast.error(error.message);
         });
-        const data = await res.json();
-        dispatch(signInSuccess(data));
-
-        if (data.success === false) {
-          dispatch(signInFailure(data.error));
-          toast.error(data.message);
-        } else {
-          dispatch(signInSuccess(data));
-          console.log(data, "sss");
-          navigate("/");
-          dispatch(setOpenAccount(false));
-          toast.success("User created successfully");
-        }
-      } catch (error: any) {
-        console.log(error.message);
-        dispatch(signInFailure(error.message));
-        toast.error(error.message);
-      }
     }
   };
   return (
