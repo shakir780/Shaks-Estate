@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import toast from "react-hot-toast";
 const initialState = {
   currentUser: null,
   error: null,
@@ -20,12 +19,10 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
-      toast.success(action.payload);
     },
     signInFailure: (state, action) => {
       state.error = action.payload;
       state.loading = false;
-      toast.error(action.payload);
     },
     signUpStart: (state) => {
       state.loading = true;
@@ -34,12 +31,10 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
-      toast.success(action.payload);
     },
     signUpFailure: (state, action) => {
       state.error = action.payload;
       state.loading = false;
-      toast.error(action.payload);
     },
     setSignUpClicked: (state, action) => {
       state.signUpClicked = action.payload;

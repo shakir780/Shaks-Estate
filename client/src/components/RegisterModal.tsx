@@ -1,17 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa"; // Import the circular loading spinner
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSignUpClicked,
   setOpenAccount,
-  setOpenModal,
   signUpStart,
   signInFailure,
   signUpSuccess,
   signUpFailure,
+  signInStart,
+  signInSuccess,
 } from "../redux/user/userSlice";
+import toast from "react-hot-toast";
 
 const RegisterModal = () => {
   const navigate = useNavigate();
@@ -37,34 +40,65 @@ const RegisterModal = () => {
       [e.target.id]: e.target.value,
     });
   };
+
+  console.log(signUpClicked);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      dispatch(signUpStart());
 
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+    if (signUpClicked) {
+      try {
+        dispatch(signUpStart());
 
-      const data = await res.json();
+        const res = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
 
-      if (data.error) {
-        dispatch(signUpFailure(data.error));
-      } else {
-        dispatch(signUpSuccess(data));
-        navigate("/");
-        dispatch(setOpenAccount(false));
+        const data = await res.json();
+
+        if (data.error) {
+          dispatch(signUpFailure(data.error));
+        } else {
+          dispatch(signUpSuccess(data));
+          navigate("/");
+          dispatch(setOpenAccount(false));
+        }
+      } catch (error: any) {
+        dispatch(signUpFailure(error.message));
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      dispatch(signUpFailure(error.message));
+    } else {
+      try {
+        dispatch(signInStart());
+        const res = await fetch("/api/auth/signin", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        dispatch(signInSuccess(data));
+
+        if (data.success === false) {
+          dispatch(signInFailure(data.error));
+          toast.error(data.message);
+        } else {
+          dispatch(signInSuccess(data));
+          console.log(data, "sss");
+          navigate("/");
+          dispatch(setOpenAccount(false));
+          toast.success("User created successfully");
+        }
+      } catch (error: any) {
+        console.log(error.message);
+        dispatch(signInFailure(error.message));
+        toast.error(error.message);
+      }
     }
   };
-
   return (
     <>
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center p-8 bg-gray-900 bg-opacity-50 z-50">
@@ -126,7 +160,6 @@ const RegisterModal = () => {
               disabled={loading} // Disable the button when loading is true
             >
               {loading ? (
-                // Show the loading spinner inside the button when loading is true
                 <div className="text-center flex  justify-center">
                   <FaSpinner className="animate-spin mr-2 text-2xl" />
                 </div>
