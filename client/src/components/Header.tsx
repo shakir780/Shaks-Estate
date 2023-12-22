@@ -6,14 +6,24 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Account from "./Account";
 import AccountCard from "./AccountCard";
+import { useDispatch, useSelector } from "react-redux";
+import { setOpenAccount } from "../redux/user/userSlice";
 
 const Header = () => {
+  interface RootState {
+    user: {
+      openAccount: boolean;
+      // Add other properties of 'user' here
+    };
+    // Add other slices of your state here
+  }
+  const dispatch = useDispatch();
+  const openAccount = useSelector((state: RootState) => state.user.openAccount);
   const [openSidebar, setOpenSidebar] = useState(false);
-  const [openAccount, setOpenAccount] = useState(false);
   return (
     <>
       <header className="p-10 bg-white shadow-lg hidden md:block">
-        <div className="flex justify-between items-center px-8">
+        <div className="flex justify-between items-center px-24">
           <div>
             <h1 className="font-bold uppercase text-3xl">Shaks Estate</h1>
             <p className="text-sm opacity-95">A Real Estate market place</p>
@@ -57,27 +67,30 @@ const Header = () => {
           </div>
         </div>
       </header>
-      <div className="bg-blue-400 shadow-lg md:p-1 py-4    ">
-        <div className="flex items-center justify-between md:block">
+      <div className="bg-blue-400 shadow-lg md:p-1 py-4 w-full overflow-hidden     ">
+        <div className="flex items-center justify-between md:block  md:px-28">
           <div className="flex justify-between items-center">
-            <ul className="flex gap-3 text-white font-semibold text-xl uppercase px-3">
+            <ul className="md:flex gap-3 text-white font-semibold text-xl uppercase px-3 hidden">
               <li className="cursor-pointer hover:opacity-60">Home</li>
               <li className="cursor-pointer hover:opacity-60">About</li>
             </ul>
+            <div className="md:hidden inline-block px-5 text-white">
+              <h1 className="font-bold uppercase text-sm ">Shaks Estate</h1>
+            </div>
 
             <div className="hidden md:flex gap-6 items-center px-16 ">
               <div className="bg-white px-4 py-4 h-full flex items-center gap-4 cursor-pointer">
                 <FaPlus className="text-blue-700" />
                 <h1>Submit Property</h1>
               </div>
-              <div onClick={() => setOpenAccount(!openAccount)}>
+              <div onClick={() => dispatch(setOpenAccount(!openAccount))}>
                 <Account />
               </div>
             </div>
           </div>
           <div className="flex px-4 gap-4 ">
             <div
-              onClick={() => setOpenAccount(!openAccount)}
+              onClick={() => dispatch(setOpenAccount(!openAccount))}
               className="flex md:hidden"
             >
               <Account />
@@ -91,12 +104,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      {openAccount && (
-        <AccountCard
-          openAccount={openAccount}
-          setOpenAccount={setOpenAccount}
-        />
-      )}
+      {openAccount && <AccountCard />}
 
       {openSidebar && (
         <Sidebar setOpenSidebar={setOpenSidebar} openSidebar={openSidebar} />
