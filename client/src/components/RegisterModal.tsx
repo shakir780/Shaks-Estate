@@ -16,6 +16,8 @@ import {
 } from "../redux/user/userSlice";
 import toast from "react-hot-toast";
 import { DynamicAxios } from "../utils/DynamicAxios";
+import OAuth from "./OAuth";
+import { FbAuth } from "./FbAuth";
 const RegisterModal = () => {
   const navigate = useNavigate();
 
@@ -98,8 +100,6 @@ const RegisterModal = () => {
             </header>
             <div
               onClick={() => {
-                // setOpenModal(false);
-
                 dispatch(setOpenAccount(false));
               }}
               className="cursor-pointer"
@@ -159,6 +159,8 @@ const RegisterModal = () => {
                 "Log In"
               )}
             </button>
+            <OAuth />
+            <FbAuth />
           </form>
           <div className="flex gap-2 md:gap-2 mt-5 items-center">
             <p className="text-xs md:text-lg">
@@ -174,8 +176,6 @@ const RegisterModal = () => {
               {signUpClicked ? "Log in" : " Sign Up"}
             </span>
           </div>
-
-          {/* Add sign-up form fields here */}
         </div>
       </div>
     </>
