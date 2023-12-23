@@ -2,8 +2,10 @@ import { getAuth, signInWithPopup } from "firebase/auth";
 import { app } from "../firebase";
 import { FacebookAuthProvider } from "firebase/auth";
 import React from "react";
-import { signInSuccess } from "../redux/user/userSlice";
+import { signInSuccess, setOpenAccount } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
+import { IoLogoFacebook } from "react-icons/io";
+
 export const FbAuth = () => {
   const dispatch = useDispatch();
   const handleFaceBookClick = async () => {
@@ -24,6 +26,7 @@ export const FbAuth = () => {
       });
       const data = await res.json();
       dispatch(signInSuccess(data));
+      dispatch(setOpenAccount(false));
     } catch (error) {
       console.log("could not sign in with google", error);
     }
@@ -33,9 +36,16 @@ export const FbAuth = () => {
     <button
       type="button"
       onClick={handleFaceBookClick}
-      className="bg-blue-400 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+      className="border border-gray-950  text-black  p-3 rounded-lg uppercase hover:bg-gray-100 disabled:opacity-80"
     >
-      Continue with Facebook
+      <div className="flex items-center">
+        <span className="text-2xl">
+          <IoLogoFacebook />
+        </span>
+        <span className="text-center ml-[20px] md:ml-[140px] text-xs md:text-lg">
+          Continue with facebook
+        </span>
+      </div>
     </button>
   );
 };

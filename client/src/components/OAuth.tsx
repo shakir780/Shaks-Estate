@@ -1,21 +1,14 @@
 import { getAuth, signInWithPopup } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import React from "react";
-import { FaSpinner } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { FcGoogle } from "react-icons/fc";
+
 import { useDispatch } from "react-redux";
-import { signInSuccess } from "../redux/user/userSlice";
+import { signInSuccess, setOpenAccount } from "../redux/user/userSlice";
 import { app } from "../firebase";
-interface RootState {
-  user: {
-    signUpClicked: boolean;
-    loading: boolean;
-  };
-}
 
 const OAuth = () => {
   const dispatch = useDispatch();
-  const loading = useSelector((state: RootState) => state.user.loading);
 
   const handleGoogleCLick = async () => {
     try {
@@ -35,6 +28,7 @@ const OAuth = () => {
       });
       const data = await res.json();
       dispatch(signInSuccess(data));
+      dispatch(setOpenAccount(false));
     } catch (error) {
       console.log("could not sign in with google", error);
     }
@@ -43,17 +37,17 @@ const OAuth = () => {
     <button
       type="button"
       onClick={handleGoogleCLick}
-      className="bg-red-400 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
-      disabled={loading} // Disable the button when loading is true
+      className="border border-gray-950  text-black p-3 rounded-lg uppercase hover:bg-gray-100 disabled:opacity-80"
+      // Disable the button when loading is true
     >
-      {loading ? (
-        <div className="text-center flex  justify-center">
-          <FaSpinner className="animate-spin mr-2 text-2xl" />
-        </div>
-      ) : (
-        // Show "Sign Up" or "Log In" text based on signUpClicked when loading is false
-        " Continue with Google"
-      )}
+      <div className="flex items-center  ">
+        <span className="text-2xl">
+          <FcGoogle />
+        </span>
+        <span className="text-center ml-[20px] md:ml-[140px] text-xs md:text-lg">
+          Continue with Google
+        </span>
+      </div>
     </button>
   );
 };

@@ -25,6 +25,7 @@ const RegisterModal = () => {
     user: {
       signUpClicked: boolean;
       openAccount: boolean;
+      openModal: boolean;
       loading: boolean;
     };
   }
@@ -80,6 +81,7 @@ const RegisterModal = () => {
             dispatch(signInSuccess(data));
             navigate("/");
             dispatch(setOpenAccount(false));
+            // dispatch(setOpenModal(false));
             toast.success("User created successfully");
           }
         })
@@ -93,9 +95,9 @@ const RegisterModal = () => {
   return (
     <>
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center p-8 bg-gray-900 bg-opacity-50 z-50">
-        <div className="bg-white w-[500px] rounded-lg p-8 ">
+        <div className="bg-white w-[600px] rounded-2xl p-8  2xl:overflow-hidden overflow-y-scroll h-[600px] 2xl:h-fit  ">
           <div className="flex justify-between items-center pb-6">
-            <header className="text-center font-bold text-md text-gray-700  ">
+            <header className="text-center font-bold text-xl text-gray-600  ">
               <span>Log in or sign up</span>
             </header>
             <div
@@ -110,7 +112,7 @@ const RegisterModal = () => {
 
           <hr />
           <div className="p-4">
-            <span className="font-semibold text-sm md:text-lg">
+            <span className="font-semibold text-sm md:text-lg text-gray-700">
               Welcome to Shaks Estate
             </span>
           </div>
@@ -159,6 +161,14 @@ const RegisterModal = () => {
                 "Log In"
               )}
             </button>
+            <div
+              className="flex items-center
+             gap-4"
+            >
+              <span className="border border-gray-500  w-full "></span>
+              <span>or</span>
+              <span className="border border-gray-500  w-full "></span>
+            </div>
             <OAuth />
             <FbAuth />
           </form>
