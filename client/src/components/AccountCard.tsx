@@ -104,7 +104,9 @@ const AccountCard = () => {
             <Link
               to={"/account"}
               onClick={() => dispatch(setOpenAccount(false))}
-              className={`hover:bg-blue-200 block cursor-pointer w-full  px-7 py-2 rounded-lg text-gray-500 font-semibold `}
+              className={`hover:bg-blue-200 block cursor-pointer w-full  px-7 py-2 rounded-lg text-gray-500 font-semibold ${
+                !currentUser && "hidden"
+              } `}
             >
               My Account
             </Link>
