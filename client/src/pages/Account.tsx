@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import {
   deleteUserFailure,
@@ -8,11 +8,16 @@ import {
   signOutFailure,
   signOutStart,
   signOutSuccess,
+  updateFailure,
+  updateStart,
+  updateSuccess,
 } from "../redux/user/userSlice";
 import { DynamicAxios } from "../utils/DynamicAxios";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
+import FileUpload from "../utils/handleFileUpload";
 const Account = () => {
   interface RootState {
     user: {
@@ -21,12 +26,16 @@ const Account = () => {
         username: string;
         email: string;
         _id: string;
+        avatar: string;
       };
     };
   }
-  const fileRef = useRef<HTMLInputElement | null>(null);
+  interface FormDataState {
+    avatar?: string;
+  }
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const [formData, setFormData] = useState({});
+  console.log(currentUser);
+  const [formData, setFormData] = useState<FormDataState>({});
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -77,29 +86,50 @@ const Account = () => {
       });
   };
 
+  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    DynamicAxios(`api/user/update/${currentUser._id}`, "PUT", formData)
+      .then((data) => {
+        dispatch(updateStart());
+        if (data.success === false) {
+          dispatch(updateFailure(data.error));
+          toast.error(data.message);
+          console.log(data.message);
+        } else {
+          dispatch(updateSuccess(data));
+          console.log(data);
+          toast.success("User has been updated");
+        }
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((error: any): void => {
+        dispatch(updateFailure(error.message));
+        toast.error(error.message);
+      });
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-center font-bold py-6 text-3xl">Personal Info</h1>
-      <form className="flex flex-col gap-4">
-        <input ref={fileRef} type="file" className="hidden" accept="img/*" />
-        <img
-          onClick={() => fileRef.current && fileRef.current.click()}
-          className="rounded-full h-24 w-24 object-cover cursor-pointer self-center"
-          src=""
-          alt=""
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <FileUpload
+          setFormData={setFormData}
+          src={formData.avatar || currentUser.avatar}
         />
+
         <input
           className="border p-3 rounded-lg"
           type="username"
           id="username"
-          defaultValue={currentUser.username}
+          defaultValue={currentUser?.username}
           onChange={handleChange}
         />
         <input
           className="border p-3 rounded-lg"
           type="email"
           id="email"
-          defaultValue={currentUser.email}
+          defaultValue={currentUser?.email}
           onChange={handleChange}
         />
         <input
@@ -108,7 +138,10 @@ const Account = () => {
           id="password"
           onChange={handleChange}
         />
-        <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
+        <button
+          type="submit"
+          className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
+        >
           Update
         </button>
       </form>

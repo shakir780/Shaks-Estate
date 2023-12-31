@@ -69,6 +69,18 @@ const userSlice = createSlice({
     setOpenModal: (state, action) => {
       state.openModal = action.payload;
     },
+    updateStart: (state) => {
+      state.loading = true;
+    },
+    updateSuccess: (state, action) => {
+      state.currentUser = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    updateFailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -88,6 +100,9 @@ export const {
   deleteUserFailure,
   deleteUserSuccess,
   deleteUserStart,
+  updateStart,
+  updateFailure,
+  updateSuccess,
 } = userSlice.actions;
 
 export default userSlice.reducer;

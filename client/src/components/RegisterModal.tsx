@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa"; // Import the circular loading spinner
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,14 @@ import toast from "react-hot-toast";
 import { DynamicAxios } from "../utils/DynamicAxios";
 import OAuth from "./OAuth";
 import { FbAuth } from "./FbAuth";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
+import FileUpload from "../utils/handleFileUpload";
 const RegisterModal = () => {
   const navigate = useNavigate();
 
@@ -29,14 +37,20 @@ const RegisterModal = () => {
       loading: boolean;
     };
   }
+  interface FormDataState {
+    avatar?: string;
+  }
   const dispatch = useDispatch();
   const signUpClicked = useSelector(
     (state: RootState) => state.user.signUpClicked
   );
   const loading = useSelector((state: RootState) => state.user.loading);
 
-  const [formData, setFormData] = React.useState({});
-
+  const [formData, setFormData] = React.useState<FormDataState>({});
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [file, setFile] = useState(undefined);
+  const [filePerc, setFilePerc] = useState(0);
+  const [fileUploadError, setfileUploadError] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -92,6 +106,35 @@ const RegisterModal = () => {
         });
     }
   };
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
+  const handleFileUpload = (file: any) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setFilePerc(Math.round(progress));
+      },
+      () => {
+        setfileUploadError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, avatar: downloadURL });
+          setfileUploadError(false);
+        });
+      }
+    );
+  };
+
   return (
     <>
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center p-8 bg-gray-900 bg-opacity-50 z-50">
@@ -123,6 +166,12 @@ const RegisterModal = () => {
             </h2>
           }
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-8">
+            {signUpClicked && (
+              <FileUpload
+                setFormData={setFormData}
+                src={formData.avatar || ""}
+              />
+            )}
             {signUpClicked && (
               <input
                 type="text"

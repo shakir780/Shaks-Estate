@@ -4,14 +4,19 @@ import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 
 export const signUp = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { avatar, username, email, password } = req.body;
   if ((!username, !email, !password)) {
     return res
       .status(400)
       .json({ error: "Please provide all required fields!" });
   }
   const hashedPassword = bcryptjs.hashSync(password, 10);
-  const newUser = new User({ username, email, password: hashedPassword });
+  const newUser = new User({
+    avatar,
+    username,
+    email,
+    password: hashedPassword,
+  });
 
   try {
     const existingUser = await User.findOne({ email });
@@ -25,7 +30,15 @@ export const signUp = async (req, res, next) => {
     }
 
     await newUser.save();
-    res.status(201).json("User created successfully");
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+    const { password: pass, ...rest } = newUser._doc;
+    res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      })
+      .status(201)
+      .json(rest);
   } catch (error) {
     next(error);
   }
@@ -82,7 +95,7 @@ export const handleAuth = async (req, res, next) => {
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       const { password: pass, ...rest } = newUser._doc;
       res
-        .cookie("access_cookie", token, { httpOnly: true })
+        .cookie("access_token", token, { httpOnly: true })
         .status(200)
         .json(rest);
     }
