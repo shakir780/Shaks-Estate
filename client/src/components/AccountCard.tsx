@@ -118,6 +118,15 @@ const AccountCard = () => {
             >
               Log Out
             </span>
+            <Link
+              to={"/listings"}
+              onClick={() => dispatch(setOpenAccount(false))}
+              className={`hover:bg-blue-200 block cursor-pointer w-full  px-7 py-2 rounded-lg text-gray-500 font-semibold ${
+                !currentUser && "hidden"
+              }`}
+            >
+              Manage Listings
+            </Link>
           </div>
         </div>
       )}

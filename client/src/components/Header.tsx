@@ -8,6 +8,7 @@ import Account from "./Account";
 import AccountCard from "./AccountCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenAccount } from "../redux/user/userSlice";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   interface RootState {
@@ -79,10 +80,13 @@ const Header = () => {
             </div>
 
             <div className="hidden md:flex gap-6 items-center px-16 ">
-              <div className="bg-white px-4 py-4 h-full flex items-center gap-4 cursor-pointer">
+              <Link
+                to={"/listing/create"}
+                className="bg-white px-4 py-4 h-full flex items-center gap-4 cursor-pointer hover:bg-gray-100 "
+              >
                 <FaPlus className="text-blue-700" />
                 <h1>Submit Property</h1>
-              </div>
+              </Link>
               <div onClick={() => dispatch(setOpenAccount(!openAccount))}>
                 <Account />
               </div>

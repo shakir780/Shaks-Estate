@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa"; // Import the circular loading spinner
 import { useNavigate } from "react-router-dom";
@@ -18,13 +18,7 @@ import toast from "react-hot-toast";
 import { DynamicAxios } from "../utils/DynamicAxios";
 import OAuth from "./OAuth";
 import { FbAuth } from "./FbAuth";
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
-import { app } from "../firebase";
+
 import FileUpload from "../utils/handleFileUpload";
 const RegisterModal = () => {
   const navigate = useNavigate();
@@ -47,10 +41,7 @@ const RegisterModal = () => {
   const loading = useSelector((state: RootState) => state.user.loading);
 
   const [formData, setFormData] = React.useState<FormDataState>({});
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const [file, setFile] = useState(undefined);
-  const [filePerc, setFilePerc] = useState(0);
-  const [fileUploadError, setfileUploadError] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -105,34 +96,6 @@ const RegisterModal = () => {
           toast.error(error.message);
         });
     }
-  };
-  useEffect(() => {
-    if (file) {
-      handleFileUpload(file);
-    }
-  }, [file]);
-  const handleFileUpload = (file: any) => {
-    const storage = getStorage(app);
-    const fileName = new Date().getTime() + file.name;
-    const storageRef = ref(storage, fileName);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setFilePerc(Math.round(progress));
-      },
-      () => {
-        setfileUploadError(true);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setFormData({ ...formData, avatar: downloadURL });
-          setfileUploadError(false);
-        });
-      }
-    );
   };
 
   return (

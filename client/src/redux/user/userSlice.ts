@@ -6,6 +6,8 @@ const initialState = {
   signUpClicked: false,
   openAccount: false,
   openModal: false,
+  filePerc: 0,
+  fileUploadError: false,
 };
 
 const userSlice = createSlice({
