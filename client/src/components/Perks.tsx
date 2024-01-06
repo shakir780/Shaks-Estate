@@ -1,9 +1,27 @@
-export default function Perks() {
+interface PerksProps {
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  formData: {
+    wifi: string;
+    parking: string;
+    ac: string;
+    tv: string;
+    radio: string;
+    pets: string;
+    furnished: string;
+  };
+}
+export default function Perks({ handleChange, formData }: PerksProps) {
   return (
     <>
       <div className=" mt-2 grid gap-2 grid-cols-2 ">
-        <label className=" itmes-center border p-4 flex rounded-2xl gap-2">
-          <input type="checkbox" name="wifi" />
+        <label className=" items-center border p-4 flex rounded-2xl gap-2">
+          <input
+            type="checkbox"
+            name="wifi"
+            id="wifi"
+            value={formData.wifi}
+            onChange={handleChange}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -22,8 +40,14 @@ export default function Perks() {
           <span>Wifi</span>
         </label>
 
-        <label className=" itmes-center border p-4 flex rounded-2xl gap-2">
-          <input type="checkbox" name="park" />
+        <label className=" items-center border p-4 flex rounded-2xl gap-2">
+          <input
+            type="checkbox"
+            name="park"
+            id="parking"
+            value={formData.parking}
+            onChange={handleChange}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -41,8 +65,14 @@ export default function Perks() {
 
           <span> parking spot</span>
         </label>
-        <label className=" itmes-center border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-          <input type="checkbox" name="Tv" />
+        <label className=" items-center border p-4 flex rounded-2xl gap-2  cursor-pointer">
+          <input
+            type="checkbox"
+            name="Tv"
+            id="tv"
+            value={formData.tv}
+            onChange={handleChange}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -60,8 +90,14 @@ export default function Perks() {
 
           <span>Tv</span>
         </label>
-        <label className=" itmes-center border p-4 flex rounded-2xl gap-2">
-          <input type="checkbox" name="radio" />
+        <label className=" items-center border p-4 flex rounded-2xl gap-2">
+          <input
+            type="checkbox"
+            name="radio"
+            id="radio"
+            value={formData.radio}
+            onChange={handleChange}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -79,8 +115,14 @@ export default function Perks() {
 
           <span>Radio</span>
         </label>
-        <label className=" itmes-center border p-4 flex rounded-2xl gap-2">
-          <input type="checkbox" name="pets" />
+        <label className=" items-center border p-4 flex rounded-2xl gap-2">
+          <input
+            type="checkbox"
+            name="pets"
+            id="pets"
+            value={formData.pets}
+            onChange={handleChange}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -98,8 +140,14 @@ export default function Perks() {
 
           <span>Pets</span>
         </label>
-        <label className=" itmes-center border p-4 flex rounded-2xl gap-2">
-          <input type="checkbox" name="entrance" />
+        <label className=" items-center border p-4 flex rounded-2xl gap-2">
+          <input
+            type="checkbox"
+            name="furnished"
+            id="furnished"
+            value={formData.furnished}
+            onChange={handleChange}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -115,10 +163,16 @@ export default function Perks() {
             />
           </svg>
 
-          <span>Private entrance</span>
+          <span>Furnished</span>
         </label>
-        <label className=" itmes-center border p-4 flex rounded-2xl gap-2">
-          <input type="checkbox" name="entrance" />
+        <label className=" items-center border p-4 flex rounded-2xl gap-2">
+          <input
+            type="checkbox"
+            name="ac"
+            id="ac"
+            value={formData.ac}
+            onChange={handleChange}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             version="1.1"

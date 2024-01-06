@@ -1,4 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
+import { useState } from "react";
 import Perks from "../components/Perks";
+
+import { DynamicAxios } from "../utils/DynamicAxios";
+import PhotoUploader from "../components/PhotoUploader";
+import { useNavigate } from "react-router-dom";
 
 const InputHeader = ({
   title,
@@ -8,20 +15,98 @@ const InputHeader = ({
   subTitle: string;
 }) => {
   return (
-    <>
+    <div className="flex flex-col">
       <h2 className="text-md mt-4 font-semibold">{title}</h2>
       <p className="text-gray-500 text-sm"> {subTitle}</p>
-    </>
+    </div>
   );
 };
 const CreateListing = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    imageUrls: [] as string[],
+
+    title: "",
+    description: "",
+    address: "",
+    type: "rent",
+    bedrooms: 1,
+    bathrooms: 1,
+    regularPrice: 50,
+    discountPrice: 0,
+    parking: false,
+    offer: false,
+    furnished: false,
+    tv: false,
+    radio: false,
+    ac: false,
+    pets: false,
+    wifi: false,
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (e.target.id === "sale" || e.target.id === "rent") {
+      setFormData({
+        ...formData,
+        type: e.target.id,
+      });
+    }
+    if (
+      e.target instanceof HTMLInputElement &&
+      (e.target.id === "parking" ||
+        e.target.id === "furnished" ||
+        e.target.id === "wifi" ||
+        e.target.id === "tv" ||
+        e.target.id === "pets" ||
+        e.target.id === "ac" ||
+        e.target.id === "radio")
+    ) {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.checked,
+      });
+    }
+    if (
+      e.target.type === "number" ||
+      e.target.type === "text" ||
+      e.target.type === "textarea"
+    ) {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+    }
+  };
+
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    DynamicAxios("/api/listing/create", "POST", formData)
+      .then((data) => {
+        if (data.success === false) {
+          console.log(data.message);
+        } else {
+          console.log(data);
+          navigate("/listings");
+        }
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((error: any): void => {
+        console.log(error);
+      });
+  };
+
   return (
-    <main className="p-3 max-w-4xl mx-auto">
+    <main className="p-3 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold text-center my-7 ">
         {" "}
         Create a Listing
       </h1>
-      <form className="flex flex-col md:flex-row gap-10">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col md:flex-row gap-10"
+      >
         <div className="flex flex-col gap-4 flex-1">
           <InputHeader
             title="Title"
@@ -29,9 +114,11 @@ const CreateListing = () => {
           />
           <input
             type="text"
-            id="name"
-            placeholder="Name"
+            id="title"
+            placeholder="title"
             required
+            value={formData.title}
+            onChange={handleChange}
             className="border p-3 rounded-lg"
           />
           <InputHeader
@@ -39,31 +126,41 @@ const CreateListing = () => {
             subTitle=" description of the this place"
           />
           <textarea
-            name=""
             id="description"
+            value={formData.description}
             placeholder="Description"
             className="border p-3 rounded-lg"
-          ></textarea>
+            onChange={handleChange}
+          />
           <InputHeader title="Address" subTitle="where its located" />
           <input
             placeholder="Address"
             id="address"
+            value={formData.address}
             type="text"
             className="border p-3 rounded-lg"
+            onChange={handleChange}
           />
           <InputHeader
             title="perks"
-            subTitle="  select all the perks of the place"
+            subTitle="select all the perks of the place"
           />
-          <Perks />
+
+          <Perks handleChange={handleChange} formData={formData} />
+          <InputHeader
+            title="Facilities"
+            subTitle="How many bedrooms and bathrooms does it have"
+          />
           <div className="flex flex-wrap gap-6 items-center">
             <div className="flex items-center gap-2">
               <input
                 type="number"
                 id="bedrooms"
+                value={formData.bedrooms}
                 min="1"
                 max="10"
                 required
+                onChange={handleChange}
                 className="p-3 border border-gray-300 rounded-lg"
               />
               <p>Beds</p>
@@ -72,41 +169,72 @@ const CreateListing = () => {
               <input
                 type="number"
                 id="bathrooms"
+                value={formData.bathrooms}
                 min="1"
                 max="10"
                 required
+                onChange={handleChange}
                 className="p-3 border border-gray-300 rounded-lg"
               />
               <p>Baths</p>
             </div>
-            <div className="flex items-center gap-2">
+          </div>
+          <InputHeader title="Type" subTitle="Rent / Sale" />
+          <div className="flex gap-3">
+            <label className=" items-center border p-4 flex rounded-2xl gap-2  cursor-pointer">
               <input
-                type="number"
-                id="regularPrice"
-                min="50"
-                max="1000000"
-                required
-                className="p-3 border border-gray-300 rounded-lg"
+                type="checkbox"
+                name="Sale"
+                id="sale"
+                onChange={handleChange}
+                checked={formData.type === "sale"}
               />
-              <div className="flex flex-col items-center">
-                <p>Regular price</p>
-                <span className="text-sm text-center">($ / month)</span>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-2">
+              <span>Sale</span>
+            </label>
+            <label className=" items-center border p-4 flex rounded-2xl gap-2  cursor-pointer">
               <input
-                type="number"
-                id="discountPrice"
-                min="0"
-                max="10000000"
-                required
-                className="p-3 border border-gray-300 rounded-lg"
+                type="checkbox"
+                name="rent"
+                id="rent"
+                onChange={handleChange}
+                checked={formData.type === "rent"}
               />
-              <div className="flex flex-col items-center">
-                <p>Discounted price</p>
-                <span className="text-sm text-center">($ / month)</span>
-              </div>
+
+              <span>Rent</span>
+            </label>
+          </div>
+          <InputHeader title="Prices" subTitle="The prices " />
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              id="regularPrice"
+              value={formData.regularPrice}
+              min="50"
+              max="1000000"
+              required
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded-lg"
+            />
+            <div className="flex flex-col items-center">
+              <p>Regular price</p>
+              <span className="text-sm text-center">($ / month)</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              id="discountPrice"
+              value={formData.discountPrice}
+              min="0"
+              max="10000000"
+              required
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded-lg"
+            />
+            <div className="flex flex-col items-center">
+              <p>Discounted price</p>
+              <span className="text-sm text-center">($ / month)</span>
             </div>
           </div>
         </div>
@@ -115,21 +243,14 @@ const CreateListing = () => {
             title="Images"
             subTitle="  The first image will be the cover (max 6)"
           />
-          <div className="flex gap-4">
-            <input
-              className="p-3 border border-gray-300 rounded w-full"
-              type="file"
-              id="images"
-              accept="image/*"
-              multiple
-            />
-            <button
-              type="button"
-              className="p-3 text-blue-700 border border-blue-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
-            >
-              Upload
-            </button>
-          </div>
+
+          <PhotoUploader setFormData={setFormData} formData={formData} />
+          <button
+            type="submit"
+            className="p-3 bg-slate-800 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+          >
+            Create Listing
+          </button>
         </div>
       </form>
     </main>
