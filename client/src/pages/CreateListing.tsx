@@ -6,6 +6,7 @@ import Perks from "../components/Perks";
 import { DynamicAxios } from "../utils/DynamicAxios";
 import PhotoUploader from "../components/PhotoUploader";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const InputHeader = ({
   title,
@@ -23,6 +24,8 @@ const InputHeader = ({
 };
 const CreateListing = () => {
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser);
   const [formData, setFormData] = useState({
     imageUrls: [] as string[],
 
@@ -82,13 +85,16 @@ const CreateListing = () => {
 
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    DynamicAxios("/api/listing/create", "POST", formData)
+    DynamicAxios("/api/listing/create", "POST", {
+      ...formData,
+      userRef: currentUser._id,
+    })
       .then((data) => {
         if (data.success === false) {
           console.log(data.message);
         } else {
           console.log(data);
-          navigate("/listings");
+          navigate(`/listing/${data._id}`);
         }
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -96,6 +102,7 @@ const CreateListing = () => {
         console.log(error);
       });
   };
+  const [sale, setIsSale] = useState(false);
 
   return (
     <main className="p-3 max-w-6xl mx-auto">
@@ -186,7 +193,12 @@ const CreateListing = () => {
                 type="checkbox"
                 name="Sale"
                 id="sale"
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  if (e.target.checked) {
+                    setIsSale(true);
+                  }
+                }}
                 checked={formData.type === "sale"}
               />
 
@@ -197,7 +209,12 @@ const CreateListing = () => {
                 type="checkbox"
                 name="rent"
                 id="rent"
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  if (e.target.checked) {
+                    setIsSale(false);
+                  }
+                }}
                 checked={formData.type === "rent"}
               />
 
@@ -218,30 +235,16 @@ const CreateListing = () => {
             />
             <div className="flex flex-col items-center">
               <p>Regular price</p>
-              <span className="text-sm text-center">($ / month)</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              id="discountPrice"
-              value={formData.discountPrice}
-              min="0"
-              max="10000000"
-              required
-              onChange={handleChange}
-              className="p-3 border border-gray-300 rounded-lg"
-            />
-            <div className="flex flex-col items-center">
-              <p>Discounted price</p>
-              <span className="text-sm text-center">($ / month)</span>
+              <span className="text-sm text-center">
+                {!sale ? "($ / month)" : "$"}
+              </span>
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-4 flex-1">
           <InputHeader
             title="Images"
-            subTitle="  The first image will be the cover (max 6)"
+            subTitle="  The first image will be the cover (min 6)"
           />
 
           <PhotoUploader setFormData={setFormData} formData={formData} />

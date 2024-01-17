@@ -77,12 +77,9 @@ const AccountCard = () => {
     };
   }, []);
   return (
-    <>
+    <div ref={closeAccountRef} className="relative">
       {!openRegisterModal && (
-        <div
-          ref={closeAccountRef}
-          className="bg-white shadow-2xl py-4 w-[200px] float-right mr-[50px] md:mr-[180px] border-2 rounded-lg "
-        >
+        <div className="absolute bg-white shadow-2xl py-4 w-[200px] right-0 mr-[50px] md:mr-[180px] border-2 rounded-lg z-50 ">
           <div className="flex flex-col gap-3 w-full ">
             <span
               onClick={openRegisterModals}
@@ -132,7 +129,7 @@ const AccountCard = () => {
       )}
 
       {openRegisterModal && <RegisterModal />}
-    </>
+    </div>
   );
 };
 

@@ -53,7 +53,11 @@ const PhotoUploader = ({ formData, setFormData }: PhotoUploaderProps) => {
   };
 
   const handleImageSubmit = () => {
-    if (files.length > 0 && files.length < 7 && formData.imageUrls.length < 7) {
+    if (
+      files.length >= 6 &&
+      files.length <= 20 &&
+      formData.imageUrls.length <= 20
+    ) {
       const promises = [];
 
       for (let i = 0; i < files?.length; i++) {
@@ -73,7 +77,7 @@ const PhotoUploader = ({ formData, setFormData }: PhotoUploaderProps) => {
           setImageUploadError("Image Upload failed (2 mb max per image)");
         });
     } else {
-      setImageUploadError("You can only Upload 6 image per listing");
+      setImageUploadError("You have to upload minimum of 6 images");
     }
   };
 

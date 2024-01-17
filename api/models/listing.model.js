@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const listingSchema = new mongoose.Schema(
   {
-    name: {
+    title: {
       type: String,
       require: true,
     },
@@ -21,7 +21,7 @@ const listingSchema = new mongoose.Schema(
       type: Boolean,
       require: true,
     },
-    Tv: {
+    tv: {
       type: Boolean,
       require: true,
     },
@@ -37,7 +37,7 @@ const listingSchema = new mongoose.Schema(
       type: Boolean,
       require: true,
     },
-    aircondition: {
+    ac: {
       type: Boolean,
       require: true,
     },
@@ -53,24 +53,18 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       require: true,
     },
-    offer: {
-      type: Boolean,
-      required: true,
-    },
+
     regularPrice: {
       type: Number,
       required: true,
     },
-    discountPrice: {
-      type: Number,
-      required: true,
-    },
+
     imageUrls: {
       type: Array,
       require: true,
     },
     userRef: {
-      type: Array,
+      type:String,
       require: true,
     },
   },

@@ -87,7 +87,12 @@ const Header = () => {
                 <FaPlus className="text-blue-700" />
                 <h1>Submit Property</h1>
               </Link>
-              <div onClick={() => dispatch(setOpenAccount(!openAccount))}>
+              <div
+                onClick={() => {
+                  dispatch(setOpenAccount(!openAccount));
+                }}
+              >
+                {" "}
                 <Account />
               </div>
             </div>
