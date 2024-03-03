@@ -37,9 +37,11 @@ const AccountCard = () => {
   };
 
   const openSignUpModal = () => {
-    setOpenRegisterModal(true);
-    dispatch(setSignUpClicked(!signUpClicked));
+    dispatch(setOpenRegisterModal(true));
+
+    dispatch(setSignUpClicked(true));
   };
+
   const { currentUser } = useSelector((state: RootState) => state.user);
 
   const LogOut = () => {
