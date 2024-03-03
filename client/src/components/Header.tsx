@@ -16,10 +16,18 @@ import { Link } from "react-router-dom";
 import RegisterModal from "./RegisterModal";
 
 const Header = () => {
+  interface User {
+    id: string;
+    name: string;
+    email: string;
+    // Add other properties as needed
+  }
   interface RootState {
     user: {
       openAccount: boolean;
       openRegisterModal: boolean;
+      currentUser: User; // Assuming 'User' is the correct type for 'currentUser'
+
       // Add other properties of 'user' here
     };
     // Add other slices of your state here
@@ -28,7 +36,7 @@ const Header = () => {
   const openAccount = useSelector((state: RootState) => state.user.openAccount);
   const { currentUser } = useSelector((state: RootState) => state.user);
   const openRegisterModal = useSelector(
-    (state) => state.user.openRegisterModal
+    (state: RootState) => state.user.openRegisterModal
   );
 
   const [openSidebar, setOpenSidebar] = useState(false);

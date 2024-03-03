@@ -1,4 +1,3 @@
-import React from "react";
 import { FaFax } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoCallSharp } from "react-icons/io5";

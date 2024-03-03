@@ -1,12 +1,7 @@
 import { getAuth, signInWithPopup } from "firebase/auth";
 import { app } from "../firebase";
 import { FacebookAuthProvider } from "firebase/auth";
-import React from "react";
-import {
-  signInSuccess,
-  setOpenAccount,
-  setOpenRegisterModal,
-} from "../redux/user/userSlice";
+import { signInSuccess, setOpenRegisterModal } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { IoLogoFacebook } from "react-icons/io";
 

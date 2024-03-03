@@ -110,7 +110,7 @@ const Account = () => {
   };
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
+    <div className="p-3 max-w-lg mx-auto ">
       <h1 className="text-center font-bold py-6 text-3xl">Personal Info</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <FileUpload

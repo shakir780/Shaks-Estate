@@ -1,4 +1,3 @@
-import React from "react";
 import Italy from "../../src/assets/rome-iStock-508540910.jpg";
 import LondonPic from "../../src/assets/popular-places-6.jpg";
 import California from "../../src/assets/view-Rome.webp";

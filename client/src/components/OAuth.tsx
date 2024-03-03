@@ -1,14 +1,9 @@
 import { getAuth, signInWithPopup } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
-import React from "react";
 import { FcGoogle } from "react-icons/fc";
 
 import { useDispatch } from "react-redux";
-import {
-  signInSuccess,
-  setOpenAccount,
-  setOpenRegisterModal,
-} from "../redux/user/userSlice";
+import { signInSuccess, setOpenRegisterModal } from "../redux/user/userSlice";
 import { app } from "../firebase";
 
 const OAuth = () => {
