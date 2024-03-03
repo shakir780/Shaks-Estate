@@ -23,9 +23,7 @@ const AccountCard = () => {
     };
   }
   const dispatch = useDispatch();
-  const signUpClicked = useSelector(
-    (state: RootState) => state.user.signUpClicked
-  );
+
   const openRegisterModal = useSelector(
     (state: RootState) => state.user.openRegisterModal
   );
