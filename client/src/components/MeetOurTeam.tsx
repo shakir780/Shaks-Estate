@@ -80,7 +80,7 @@ const HoverCard: React.FC<HoverCardProps> = ({
       key={cardKey}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="h-[380px] w-[300px] rounded-lg relative "
+      className="h-[380px] w-[300px] rounded-lg relative"
       style={{
         background: "white",
         borderRadius: "8px",
