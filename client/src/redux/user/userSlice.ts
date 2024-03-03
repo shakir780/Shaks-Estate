@@ -8,6 +8,7 @@ const initialState = {
   openModal: false,
   filePerc: 0,
   fileUploadError: false,
+  openRegisterModal: false,
 };
 
 const userSlice = createSlice({
@@ -68,6 +69,9 @@ const userSlice = createSlice({
     setOpenAccount: (state, action) => {
       state.openAccount = action.payload;
     },
+    setOpenRegisterModal: (state, action) => {
+      state.openRegisterModal = action.payload;
+    },
     setOpenModal: (state, action) => {
       state.openModal = action.payload;
     },
@@ -105,6 +109,7 @@ export const {
   updateStart,
   updateFailure,
   updateSuccess,
+  setOpenRegisterModal,
 } = userSlice.actions;
 
 export default userSlice.reducer;

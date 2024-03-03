@@ -13,6 +13,7 @@ import {
   signUpFailure,
   signInStart,
   signInSuccess,
+  setOpenRegisterModal,
 } from "../redux/user/userSlice";
 import toast from "react-hot-toast";
 import { DynamicAxios } from "../utils/DynamicAxios";
@@ -85,7 +86,7 @@ const RegisterModal = () => {
           } else {
             dispatch(signInSuccess(data));
             navigate("/");
-            dispatch(setOpenAccount(false));
+            dispatch(setOpenRegisterModal(false));
             // dispatch(setOpenModal(false));
             toast.success("User created successfully");
           }
@@ -108,6 +109,7 @@ const RegisterModal = () => {
             </header>
             <div
               onClick={() => {
+                dispatch(setOpenRegisterModal(false));
                 dispatch(setOpenAccount(false));
               }}
               className="cursor-pointer"

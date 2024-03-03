@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaBath, FaBed } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
@@ -26,9 +26,7 @@ SwiperCore.use([Navigation]);
 
 const ListingItem = ({ listings }: listingspProps) => {
   const [isHovered, setIsHovered] = useState<number | null>(null);
-
-  // const originalCard = listings[0]; // Assuming there is a single card in listings
-  // const duplicatedListings = [...Array(1)].map(() => originalCard);
+  const [slidesPerView, setSlidesPerView] = useState(3);
 
   const goNext = () => {
     if (swiperRef.current) swiperRef.current.slideNext();
@@ -38,19 +36,42 @@ const ListingItem = ({ listings }: listingspProps) => {
     if (swiperRef.current) swiperRef.current.slidePrev();
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      // Adjust slidesPerView based on screen width
+      if (window.innerWidth < 640) {
+        setSlidesPerView(1);
+      } else if (window.innerWidth < 1000) {
+        setSlidesPerView(2);
+      } else {
+        setSlidesPerView(3);
+      }
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Call handleResize once to set initial slidesPerView
+    handleResize();
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const swiperRef = useRef<any>(null);
   return (
     <>
       <div className="relative group  flex gap-2 px-10 ">
         <Swiper
-          slidesPerView={3}
+          slidesPerView={slidesPerView}
           spaceBetween={30}
           pagination={{ clickable: true }}
           navigation={false}
           onSwiper={(swiper) => (swiperRef.current = swiper)} // Store swiper instance using ref
         >
-          {listings.map((listing, i) => (
+          {listings?.map((listing, i) => (
             <SwiperSlide>
               <Link
                 key={i}
@@ -101,7 +122,7 @@ const ListingItem = ({ listings }: listingspProps) => {
                   {isHovered === i && (
                     <div className="overlay absolute inset-0 bg-blue-900 bg-opacity-50 gap-4 flex items-center justify-center ease-in-out">
                       <motion.div
-                        className="self-end font-semibold pb-10 px-4 bg-blue-950 bg-opacity-50 "
+                        className="self-end font-semibold pb-10 px-4 bg-blue-950 bg-opacity-50 w-full"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}

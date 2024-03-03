@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Perks from "../components/Perks";
 import { DynamicAxios } from "../utils/DynamicAxios";
 import PhotoUploader from "../components/PhotoUploader";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const InputHeader = ({
@@ -21,8 +21,10 @@ const InputHeader = ({
     </div>
   );
 };
-const CreateListing = () => {
+const UpdateListing = () => {
   const navigate = useNavigate();
+  const params = useParams();
+
   const { currentUser } = useSelector((state) => state.user);
   console.log(currentUser);
   const [formData, setFormData] = useState({
@@ -45,6 +47,21 @@ const CreateListing = () => {
     pets: false,
     wifi: false,
   });
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      const listingId = params.listingId;
+      const res = await fetch(`/api/listing/${listingId}`);
+      const data = await res.json();
+
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setFormData(data);
+    };
+    fetchListing();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -84,7 +101,7 @@ const CreateListing = () => {
 
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    DynamicAxios("/api/listing/create", "POST", {
+    DynamicAxios(`/api/listing/update/${params.listingId}`, "PUT", {
       ...formData,
       userRef: currentUser._id,
     })
@@ -102,13 +119,12 @@ const CreateListing = () => {
       });
   };
   const [sale, setIsSale] = useState(false);
-
   return (
     <>
       <main className="p-3 max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-center my-7 ">
           {" "}
-          Create a Listing
+          Update a Listing
         </h1>
         <form
           onSubmit={handleSubmit}
@@ -252,7 +268,7 @@ const CreateListing = () => {
               type="submit"
               className="p-3 bg-slate-800 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
             >
-              Create Listing
+              Update Listing
             </button>
           </div>
         </form>
@@ -261,4 +277,4 @@ const CreateListing = () => {
   );
 };
 
-export default CreateListing;
+export default UpdateListing;

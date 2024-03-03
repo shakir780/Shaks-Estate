@@ -2,7 +2,11 @@ import { getAuth, signInWithPopup } from "firebase/auth";
 import { app } from "../firebase";
 import { FacebookAuthProvider } from "firebase/auth";
 import React from "react";
-import { signInSuccess, setOpenAccount } from "../redux/user/userSlice";
+import {
+  signInSuccess,
+  setOpenAccount,
+  setOpenRegisterModal,
+} from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { IoLogoFacebook } from "react-icons/io";
 
@@ -26,7 +30,7 @@ export const FbAuth = () => {
       });
       const data = await res.json();
       dispatch(signInSuccess(data));
-      dispatch(setOpenAccount(false));
+      dispatch(setOpenRegisterModal(false));
     } catch (error) {
       console.log("could not sign in with google", error);
     }

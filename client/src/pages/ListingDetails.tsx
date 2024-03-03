@@ -9,6 +9,12 @@ import { FaCheck } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Contact } from "../components/Contact";
 import { IoLocation } from "react-icons/io5";
+import RegisterModal from "../components/RegisterModal";
+import {
+  setOpenRegisterModal,
+  setSignUpClicked,
+} from "../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 interface Listing {
   title?: string;
@@ -35,11 +41,19 @@ interface UserType {
     _id: string;
   };
 }
+interface RootState {
+  user: {
+    openRegisterModal: boolean;
+    // Include other properties of the user state here
+  };
+  // Include other top-level state properties here
+}
 
 const ListingDetails = () => {
   const { currentUser } = useSelector(
     (state: { user: UserType }) => state.user
   );
+  console.log(currentUser);
 
   const params = useParams();
   const [listing, setListing] = useState<Listing | null>(null);
@@ -60,6 +74,17 @@ const ListingDetails = () => {
     };
     fetchListing();
   }, [params.id]);
+  const dispatch = useDispatch();
+
+  const openRegisterModals = () => {
+    dispatch(setOpenRegisterModal(true));
+    dispatch(setSignUpClicked(false));
+  };
+  const openRegisterModal = useSelector(
+    (state: RootState) => state.user.openRegisterModal
+  );
+
+  console.log(listing);
 
   return (
     <div>
@@ -84,7 +109,7 @@ const ListingDetails = () => {
           </div>
 
           <p className="text-2xl font-bold">
-            $ {listing?.regularPrice?.toLocaleString("en-US")}{" "}
+            $ {listing?.regularPrice?.toLocaleString("en-US")}
             {listing?.type === "rent" && " / month"}
           </p>
         </div>
@@ -220,16 +245,28 @@ const ListingDetails = () => {
           </div>
         </div>
         <div className="mb-10 text-center md:text-center">
-          {currentUser && listing?.userRef !== currentUser?._id && !contact && (
+          {currentUser && listing?.userRef !== currentUser._id && !contact && (
+            <>
+              <button
+                onClick={() => setContact(true)}
+                className="bg-slate-800 text-white rounded-lg  uppercase hover:opacity-95  p-3 px-20"
+              >
+                Contact Landlord
+              </button>
+            </>
+          )}
+          {!currentUser && (
             <button
-              onClick={() => setContact(true)}
+              onClick={openRegisterModals}
               className="bg-slate-800 text-white rounded-lg  uppercase hover:opacity-95  p-3 px-20"
             >
-              Contact Landlord
+              Sign in to Contact Landlord
             </button>
           )}
 
-          {contact && <Contact listing={listing} />}
+          {contact && (
+            <Contact listing={listing as { userRef: string; name: string }} />
+          )}
         </div>
       </main>
       {showAllImages && (
@@ -238,6 +275,7 @@ const ListingDetails = () => {
           setShowAllImages={setShowAllImages}
         />
       )}
+      {openRegisterModal && <RegisterModal />}
     </div>
   );
 };

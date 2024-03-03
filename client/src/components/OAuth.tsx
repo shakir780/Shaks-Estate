@@ -4,7 +4,11 @@ import React from "react";
 import { FcGoogle } from "react-icons/fc";
 
 import { useDispatch } from "react-redux";
-import { signInSuccess, setOpenAccount } from "../redux/user/userSlice";
+import {
+  signInSuccess,
+  setOpenAccount,
+  setOpenRegisterModal,
+} from "../redux/user/userSlice";
 import { app } from "../firebase";
 
 const OAuth = () => {
@@ -29,7 +33,7 @@ const OAuth = () => {
       });
       const data = await res.json();
       dispatch(signInSuccess(data));
-      dispatch(setOpenAccount(false));
+      dispatch(setOpenRegisterModal(false));
     } catch (error) {
       console.log("could not sign in with google", error);
     }

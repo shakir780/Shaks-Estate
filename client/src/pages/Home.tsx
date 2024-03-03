@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
-import { Navigation } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css/bundle";
 import firstBg from "../../src/assets/avi-werde-hHz4yrvxwlA-unsplash.jpg";
 import secondBg from "../../src/assets/ismael-paramo-k-kgbt9rLuM-unsplash.jpg";
@@ -8,11 +8,28 @@ import thridBg from "../../src/assets/florian-schmidinger-b_79nOqf95I-unsplash.j
 import fourthBg from "../../src/assets/ciudad-maderas-MXbM1NrRqtI-unsplash.jpg";
 import fifthBg from "../../src/assets/spacejoy-xkJ2_THgKmk-unsplash.jpg";
 import FeaturedProperties from "../components/FeaturedProperties";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import WhyUs from "./WhyUs";
+import MostPopularPlaces from "../components/MostPopularPlaces";
+import Numbers from "../components/Numbers";
+import MeetOurTeam from "../components/MeetOurTeam";
+import Testimonials from "../components/Testimonials";
 
 const Home = () => {
+  const navigate = useNavigate();
   SwiperCore.use([Navigation]);
   const bgImages = [firstBg, secondBg, thridBg, fourthBg, fifthBg];
+  const [searchTerm, setSearchTerm] = useState("");
 
+  const handleSubmit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("searchTerm", searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
   return (
     <>
       <div className="relative">
@@ -23,77 +40,53 @@ const Home = () => {
             delay: 5500,
             disableOnInteraction: false,
           }}
-          onSlideChange={(swiper) => {
-            const currentIndex = swiper.activeIndex;
-            const slides = document.querySelectorAll(".slide-container");
-            slides.forEach((slide, index) => {
-              if (index === currentIndex) {
-                slide.classList.add("active-slide");
-              } else {
-                slide.classList.remove("active-slide");
-              }
-            });
-          }}
+          modules={[Autoplay, Pagination, Navigation]}
         >
           {bgImages.map((bgImage, index) => (
-            <SwiperSlide key={index}>
-              <div
-                style={{
-                  background: `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(${bgImage}) center no-repeat`,
-                  backgroundSize: "cover",
-                  height: "80vh",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <div className="flex items-center justify-center h-full">
-                  <div className="md:flex grid gap-4 md:gap-0 grid-cols-2 ">
-                    <select
-                      key={index}
-                      id="large"
-                      className="block w-[250px] px-4 py-4 text-base text-gray-900 border border-gray-300 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      <option selected>Any Status</option>
-                      <option value="US">For Rent</option>
-                      <option value="CA">For Sale</option>
-                    </select>
-                    <select
-                      key={index}
-                      id="large"
-                      className="block w-[250px] px-4 py-4 text-base text-gray-900 border border-gray-300 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      <option selected>Bedrooms</option>
-                      <option value="US">1</option>
-                      <option value="CA">2</option>
-                      <option value="CA">3</option>
-                      <option value="CA">4</option>
-                    </select>
-                    <select
-                      key={index}
-                      id="large"
-                      className="block w-[250px] px-4 py-4 text-base text-gray-900 border border-gray-300 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      <option selected>Bathrooms</option>
-                      <option value="US">1</option>
-                      <option value="CA">2</option>
-                      <option value="CA">3</option>
-                      <option value="CA">4</option>
-                    </select>
-
-                    <div className="bg-blue-700 px-14 py-4 text-white w-fit ">
-                      <button>Search</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
+            <div>
+              <SwiperSlide key={index}>
+                <div
+                  style={{
+                    background: `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(${bgImage}) center no-repeat`,
+                    backgroundSize: "cover",
+                    height: "80vh",
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                ></div>
+              </SwiperSlide>
+            </div>
           ))}
         </Swiper>
+        <form className="flex items-center justify-center  z-20 h-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className=" flex flex-col md:flex-row gap-3 ">
+            <div>
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                type="text"
+                className="rounded-lg py-4 px-4 w-[250px] md:w-[550px] text-md"
+                placeholder="What are you looking for?"
+              />
+            </div>
+            <div
+              onClick={handleSubmit}
+              className="bg-blue-700 cursor-pointer px-14 py-4 text-white w-fit "
+            >
+              <button>Search</button>
+            </div>
+          </div>
+        </form>
       </div>
 
       <FeaturedProperties />
+      <WhyUs />
+      <MostPopularPlaces />
+      <Numbers />
+      <MeetOurTeam />
+      <Testimonials />
     </>
   );
 };

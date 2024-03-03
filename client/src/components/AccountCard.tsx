@@ -6,16 +6,19 @@ import {
   signOutFailure,
   signOutStart,
   signOutSuccess,
+  setOpenRegisterModal,
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { DynamicAxios } from "../utils/DynamicAxios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { IoCloseSharp } from "react-icons/io5";
 const AccountCard = () => {
   const navigate = useNavigate();
   interface RootState {
     user: {
       signUpClicked: boolean;
+      openRegisterModal: boolean;
       currentUser: object;
     };
   }
@@ -23,10 +26,13 @@ const AccountCard = () => {
   const signUpClicked = useSelector(
     (state: RootState) => state.user.signUpClicked
   );
-  const [openRegisterModal, setOpenRegisterModal] = useState(false);
+  const openRegisterModal = useSelector(
+    (state: RootState) => state.user.openRegisterModal
+  );
+  // const [openRegisterModal, setOpenRegisterModal] = useState(false);
 
   const openRegisterModals = () => {
-    setOpenRegisterModal(true);
+    dispatch(setOpenRegisterModal(true));
     dispatch(setSignUpClicked(false));
   };
 
@@ -80,7 +86,15 @@ const AccountCard = () => {
     <div ref={closeAccountRef} className="relative">
       {!openRegisterModal && (
         <div className="absolute bg-white shadow-2xl py-4 w-[200px] right-0 mr-[50px] md:mr-[180px] border-2 rounded-lg z-50 ">
-          <div className="flex flex-col gap-3 w-full ">
+          <div
+            onClick={() => dispatch(setOpenAccount(false))}
+            className="absolute right-2 cursor-pointer"
+          >
+            <span className="text-xl">
+              <IoCloseSharp />
+            </span>
+          </div>
+          <div className="flex flex-col pt-4 gap-3 w-full ">
             <span
               onClick={openRegisterModals}
               className={`hover:bg-blue-200 block cursor-pointer w-full px-7 py-2 rounded-lg text-gray-500 font-semibold ${
